@@ -1,26 +1,40 @@
 require('dotenv').config();
 const express = require('express');
-const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const ghRoutes = require('./routes/gh_auth');
+const publicRoutes = require('./routes/public');
+const authMiddleware = require('./controllers/auth_middleware');
+const authenticatedRoutes = require('./routes/authenticated');
 
 const app = express();
 
-app.use(morgan('dev'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(cookieParser());
+app.use(cors({
+    origin: process.env.ORIGIN,
+    credentials: true
+}));
 
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    next();
+mongoose.set('strictQuery', false);
+mongoose.connect(process.env.MONGO_URI, {}, (err) => {
+    if (err) {
+        console.log('Error connecting to MongoDB', err);
+    } else {
+        console.log('Connected to MongoDB');
+    }
 });
+
+app.use('/auth', ghRoutes);
+app.use('/public', publicRoutes);
+app.use(authMiddleware);
+app.use('/user', authenticatedRoutes);
 
 app.get('/', (req, res) => {
     res.status(200).send({
-        message: 'ok'
+        message: 'bing chilling'
     });
 });
 
 const port = process.env.PORT || 8000;
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
+app.listen(port, () => console.log(`Listening on port ${port}`));
