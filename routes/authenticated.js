@@ -2,12 +2,19 @@ const router = require('express').Router();
 const Pic = require('../models/pic');
 
 router.post('/pic', (req, res) => {
+    if (req.body.pic_description.length > 100) {
+        return res.status(400).send({
+            message: 'Pic description must be less than 50 characters'
+        });
+    }
+
     const newPic = new Pic({
         user_id: req.user.id,
         user_avatar_url: req.user.avatar_url,
         user_login: req.user.login, // a user's login is their username/handle
         pic_url: req.body.pic_url,
-        pic_description: req.body.pic_description
+        pic_description: req.body.pic_description,
+        date_created: new Date()
     });
 
     newPic.save((err) => {
