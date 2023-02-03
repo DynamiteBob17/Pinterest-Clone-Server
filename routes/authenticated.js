@@ -3,8 +3,9 @@ const Pic = require('../models/pic');
 
 router.post('/pic', (req, res) => {
     const newPic = new Pic({
-        user_id: req.user.user_id,
+        user_id: req.user.id,
         user_avatar_url: req.user.avatar_url,
+        user_login: req.user.login, // a user's login is their username/handle
         pic_url: req.body.pic_url,
         pic_description: req.body.pic_description
     });
@@ -22,18 +23,6 @@ router.post('/pic', (req, res) => {
     });
 });
 
-router.get('/pics', (req, res) => {
-    Pic.find({ user_id: req.user.user_id }, (err, pics) => {
-        if (err) {
-            res.status(500).send({
-                message: 'Error getting pics'
-            });
-        } else {
-            res.status(200).send(pics);
-        }
-    });
-});
-
 router.put('/like_pic/:id', (req, res) => {
     Pic.findById(req.params.id, (err, pic) => {
         if (err) {
@@ -43,10 +32,10 @@ router.put('/like_pic/:id', (req, res) => {
         } else {
             const pic_likes = pic.pic_likes;
 
-            if (pic_likes.indexOf(req.user.user_id) === -1) {
+            if (pic_likes.indexOf(req.user.id) === -1) {
                 Pic.updateOne(
                     { _id: req.params.id },
-                    { $push: { pic_likes: req.user.user_id } },
+                    { $push: { pic_likes: req.user.id } },
                     (err) => {
                         if (err) {
                             res.status(500).send({
@@ -77,10 +66,10 @@ router.put('/unlike_pic/:id', (req, res) => {
         } else {
             const pic_likes = pic.pic_likes;
 
-            if (pic_likes.indexOf(req.user.user_id) !== -1) {
+            if (pic_likes.indexOf(req.user.id) !== -1) {
                 Pic.updateOne(
                     { _id: req.params.id },
-                    { $pull: { pic_likes: req.user.user_id } },
+                    { $pull: { pic_likes: req.user.id } },
                     (err) => {
                         if (err) {
                             res.status(500).send({

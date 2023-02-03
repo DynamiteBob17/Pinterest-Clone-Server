@@ -13,6 +13,18 @@ router.get('/pics', (req, res) => {
     });
 });
 
+router.get('/pics/:user_id', (req, res) => {
+    pic.find({ user_id: req.params.user_id }, (err, pics) => {
+        if (err) {
+            res.status(500).send({
+                message: 'Error getting pics'
+            });
+        } else {
+            res.status(200).send(pics);
+        }
+    });
+});
+
 router.get('/pic/:id', (req, res) => {
     pic.findById(req.params.id, (err, pic) => {
         if (err) {
