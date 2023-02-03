@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const morgan = require('morgan');
 const mongoose = require('mongoose');
 const ghRoutes = require('./routes/gh_auth');
 const publicRoutes = require('./routes/public');
@@ -10,6 +11,7 @@ const authenticatedRoutes = require('./routes/authenticated');
 
 const app = express();
 
+app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
@@ -28,14 +30,15 @@ mongoose.connect(process.env.MONGO_URI, {}, (err) => {
 
 app.use('/auth', ghRoutes);
 app.use('/public', publicRoutes);
-app.use(authMiddleware);
-app.use('/user', authenticatedRoutes);
 
 app.get('/', (req, res) => {
     res.status(200).send({
         message: 'bing chilling'
     });
 });
+
+app.use(authMiddleware);
+app.use('/user', authenticatedRoutes);
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => console.log(`Listening on port ${port}`));
