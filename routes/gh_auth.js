@@ -20,7 +20,7 @@ router.get('/github', async (req, res) => {
 
         res.cookie(COOKIE_NAME, token, {
             domain: process.env.CLIENT_DOMAIN,
-            secure: true
+            httpOnly: true
         });
 
         res.redirect(process.env.ORIGIN + path);
