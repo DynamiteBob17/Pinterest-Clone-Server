@@ -19,8 +19,7 @@ router.get('/github', async (req, res) => {
         const token = jwt.sign(user, process.env.JWT_SECRET);
 
         res.cookie(COOKIE_NAME, token, {
-            domain: process.env.CLIENT_DOMAIN,
-            httpOnly: true
+            domain: process.env.CLIENT_DOMAIN
         });
 
         res.redirect(process.env.ORIGIN + path);
