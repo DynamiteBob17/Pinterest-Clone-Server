@@ -15,7 +15,7 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
-    origin: [process.env.ORIGIN, 'http://localhost:4173'],
+    origin: [process.env.ORIGIN, 'http://localhost:5173', 'http://localhost:4173'],
     credentials: true
 }));
 
