@@ -9,12 +9,9 @@ const COOKIE_NAME = 'gh_jwt';
 router.get('/github', async (req, res) => {
     const code = get(req, 'query.code');
     const path = get(req, 'query.path', '/');
-    const repo = process.env.ORIGIN.includes('github.io')
-        ? '/Pinterest-Clone-Client'
-        : '';
 
     if (!code) {
-        return res.redirect(process.env.ORIGIN + repo + path);
+        return res.redirect(process.env.ORIGIN);
     }
 
     try {
@@ -22,12 +19,12 @@ router.get('/github', async (req, res) => {
         const token = jwt.sign(user, process.env.JWT_SECRET);
 
         res.cookie(COOKIE_NAME, token, {
-            domain: process.env.CLIENT_DOMAIN + repo
+            domain: process.env.CLIENT_DOMAIN
         });
 
-        res.redirect(process.env.ORIGIN + repo + path);
+        res.redirect(process.env.ORIGIN + path);
     } catch (err) {
-        res.redirect(process.env.ORIGIN + repo);
+        res.redirect(process.env.ORIGIN);
     }
 });
 
