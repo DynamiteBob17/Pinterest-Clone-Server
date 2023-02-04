@@ -4,8 +4,6 @@ const jwt = require('jsonwebtoken');
 const { get } = require('lodash');
 const { getGithubUser } = require('../controllers/gh_auth');
 
-const COOKIE_NAME = 'gh_jwt';
-
 router.get('/github', async (req, res) => {
     const code = get(req, 'query.code');
     const path = get(req, 'query.path', '/');
@@ -18,19 +16,22 @@ router.get('/github', async (req, res) => {
         const user = await getGithubUser(code);
         const token = jwt.sign(user, process.env.JWT_SECRET);
 
-        res.redirect(process.env.ORIGIN + path + `cookie?${COOKIE_NAME}=${token}`);
+        res.redirect(process.env.ORIGIN + path + `?gh_jwt=${token}`);
     } catch (err) {
         res.redirect(process.env.ORIGIN);
     }
 });
 
-router.get('/me', (req, res) => {
-    const cookie = get(req, `cookies.${COOKIE_NAME}`);
+router.get('/me/:token', (req, res) => {
+    const token = get(req, 'params.token');
 
     try {
-        const user = jwt.verify(cookie, process.env.JWT_SECRET);
+        const user = jwt.verify(token, process.env.JWT_SECRET);
 
-        return res.status(200).send(user);
+        return res.status(200).send({
+            user,
+            token
+        });
     } catch (err) {
         return res.status(401).send('Unauthorized');
     }
