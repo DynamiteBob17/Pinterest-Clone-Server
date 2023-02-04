@@ -14,7 +14,8 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cors({
     origin: [process.env.ORIGIN],
-    credentials: true
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 
 mongoose.set('strictQuery', false);
