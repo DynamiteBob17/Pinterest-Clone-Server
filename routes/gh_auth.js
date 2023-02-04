@@ -11,7 +11,11 @@ router.get('/github', async (req, res) => {
     const path = get(req, 'query.path', '/');
 
     if (!code) {
-        return res.redirect(process.env.ORIGIN);
+        const path = process.env.ORIGIN.includes('github.io')
+            ? '/Pinterest-Clone-Client'
+            : '';
+
+        return res.redirect(process.env.ORIGIN + path);
     }
 
     try {
