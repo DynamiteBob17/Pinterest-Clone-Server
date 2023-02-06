@@ -99,7 +99,7 @@ router.put('/unlike_pic/:id', (req, res) => {
 });
 
 router.delete('/pic/:id', (req, res) => {
-    Pic.deleteOne({ _id: req.params.id }, (err) => {
+    Pic.deleteOne({ _id: req.params.id, user_id: req.user.id }, (err) => {
         if (err) {
             res.status(500).send({
                 message: 'Error deleting pic'
