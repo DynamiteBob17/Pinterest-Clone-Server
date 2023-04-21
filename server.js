@@ -11,6 +11,11 @@ const authenticatedRoutes = require('./routes/authenticated');
 
 const app = express();
 
+function listen(express) {
+    const port = process.env.PORT || 8000;
+    express.listen(port, () => console.log(`Listening on port ${port}`));
+}
+
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cors({
@@ -27,7 +32,7 @@ mongoose.connect(process.env.MONGO_URI, {}, (err) => {
     } else {
         console.log('Connected to MongoDB');
     }
-});
+}, listen(app));
 
 app.use('/auth', ghRoutes);
 app.use('/public', publicRoutes);
@@ -41,5 +46,4 @@ app.get('/', (req, res) => {
 app.use(authMiddleware);
 app.use('/user', authenticatedRoutes);
 
-const port = process.env.PORT || 8000;
-app.listen(port, () => console.log(`Listening on port ${port}`));
+listen(app);
