@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const mongoSanitize = require('express-mongo-sanitize');
 const ghRoutes = require('./routes/gh_auth');
 const publicRoutes = require('./routes/public');
 const authMiddleware = require('./controllers/auth_middleware');
@@ -17,6 +18,11 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
+app.use(
+    mongoSanitize({
+        allowDots: true
+    })
+);
 
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGO_URI, {}, (err) => {
