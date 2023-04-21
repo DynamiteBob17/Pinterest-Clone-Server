@@ -18,11 +18,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
-app.use(
-    mongoSanitize({
-        allowDots: true
-    })
-);
+app.use(mongoSanitize());
 
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGO_URI, {}, (err) => {
