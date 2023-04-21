@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const mongoSanitize = require('express-mongo-sanitize');
 const mongoose = require('mongoose');
 const ghRoutes = require('./routes/gh_auth');
 const publicRoutes = require('./routes/public');
@@ -18,6 +19,7 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 
+app.use(mongoSanitize);
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGO_URI, {}, (err) => {
     if (err) {
