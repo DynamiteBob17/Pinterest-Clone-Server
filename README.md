@@ -4,4 +4,4 @@
 ## How to use
 1. Create a **.env** or appropriate file and set up your environment similar to how it's set up in the **example.env** file in this repository
 2. **Run** `npm install` and `npm start`
-3. Should be running now on **localhost** with port 8000 or the port provided by environment variables
+3. Should be running now on **localhost** on port 8000 or the port provided by environment variables
